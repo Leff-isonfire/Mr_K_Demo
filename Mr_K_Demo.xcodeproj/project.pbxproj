@@ -13,6 +13,8 @@
 		96B52B3C1B6F475400661C1E /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 96B52B3B1B6F475400661C1E /* Images.xcassets */; };
 		96B52B3F1B6F475400661C1E /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 96B52B3D1B6F475400661C1E /* LaunchScreen.xib */; };
 		96B52B4B1B6F475400661C1E /* Mr_K_DemoTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96B52B4A1B6F475400661C1E /* Mr_K_DemoTests.swift */; };
+		96B52B551B6F555400661C1E /* CoreBluetooth.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 96B52B541B6F555400661C1E /* CoreBluetooth.framework */; };
+		96B52B571B6F555C00661C1E /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 96B52B561B6F555C00661C1E /* CoreLocation.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -36,6 +38,8 @@
 		96B52B441B6F475400661C1E /* Mr_K_DemoTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = Mr_K_DemoTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		96B52B491B6F475400661C1E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		96B52B4A1B6F475400661C1E /* Mr_K_DemoTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Mr_K_DemoTests.swift; sourceTree = "<group>"; };
+		96B52B541B6F555400661C1E /* CoreBluetooth.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreBluetooth.framework; path = System/Library/Frameworks/CoreBluetooth.framework; sourceTree = SDKROOT; };
+		96B52B561B6F555C00661C1E /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -43,6 +47,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				96B52B571B6F555C00661C1E /* CoreLocation.framework in Frameworks */,
+				96B52B551B6F555400661C1E /* CoreBluetooth.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -59,6 +65,8 @@
 		96B52B261B6F475400661C1E = {
 			isa = PBXGroup;
 			children = (
+				96B52B561B6F555C00661C1E /* CoreLocation.framework */,
+				96B52B541B6F555400661C1E /* CoreBluetooth.framework */,
 				96B52B311B6F475400661C1E /* Mr_K_Demo */,
 				96B52B471B6F475400661C1E /* Mr_K_DemoTests */,
 				96B52B301B6F475400661C1E /* Products */,
@@ -161,6 +169,11 @@
 				TargetAttributes = {
 					96B52B2E1B6F475400661C1E = {
 						CreatedOnToolsVersion = 6.3.2;
+						SystemCapabilities = {
+							com.apple.BackgroundModes = {
+								enabled = 1;
+							};
+						};
 					};
 					96B52B431B6F475400661C1E = {
 						CreatedOnToolsVersion = 6.3.2;
