@@ -18,14 +18,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate,CBPeripheralManagerDelegat
     //设备的唯一识别码 —— Set device's UUID
     let deviceUUID = UIDevice.currentDevice().identifierForVendor
     //服务的UUID —— Set service's UUID
-    let kServiceUUID:String = "C4FB2349-72FE-4CA2-94D6-1F3CB16331EE"
+    let kServiceUUID:String = "C4FB2349-72FE-4CA2-94D6-1F3CB16222AA"
     //特征的UUID —— Set characteristic's UUID
     let kCharacteristicUUID_1:String = "6A3E4B28-522D-4B3B-82A9-D5E2004534FA"
     let kCharacteristicUUID_2:String = "6A3E4B28-522D-4B3B-82A9-D5E2004534FB"
     let kCharacteristicUUID_3:String = "6A3E4B28-522D-4B3B-82A9-D5E2004534FC"
 
-    var peripheralManager = CBPeripheralManager()
-    var centralA = NSMutableArray()
+    internal var peripheralManager = CBPeripheralManager()
+    internal var centralA = NSMutableArray()
     //保存设备用户名称（后期修改，在用户更改用户名和程序启动的时候同步
     var characteristic_UserName = CBMutableCharacteristic()
     //保存时间
@@ -38,12 +38,16 @@ class AppDelegate: UIResponder, UIApplicationDelegate,CBPeripheralManagerDelegat
             let serviceUUID:CBUUID = CBUUID.init(string: kServiceUUID)
             
             //添加服务后开始广播 —— Start advertising
-//            let dic:Dictionary = [CBAdvertisementDataLocalNameKey:"My device",CBAdvertisementDataServiceUUIDsKey:serviceUUID]
+//            var dic = [CBAdvertisementDataLocalNameKey:"Leff",CBAdvertisementDataServiceUUIDsKey:serviceUUID]
 //            self.peripheralManager.startAdvertising(dic)
-            let dic:Dictionary = [CBAdvertisementDataLocalNameKey:"My device"]
-            let dic2:Dictionary = [CBAdvertisementDataServiceUUIDsKey:serviceUUID]
+                        var dic = [CBAdvertisementDataLocalNameKey:"My device"]
+                        var dic2 = [CBAdvertisementDataServiceUUIDsKey:serviceUUID]
             self.peripheralManager.startAdvertising(dic)
             self.peripheralManager.startAdvertising(dic2)
+
+//            var advertisementData : [NSObject:AnyObject] = [CBAdvertisementDataLocalNameKey:"Leff"]
+//            var advertisementData = [CBAdvertisementDataServiceUUIDsKey:serviceUUID]
+//            self.peripheralManager.startAdvertising(advertisementData)
             
             //要添加的characteristic初始化 —— Initial the characteristics
             let characteristic1:CBUUID = CBUUID.init(string: kCharacteristicUUID_1)
