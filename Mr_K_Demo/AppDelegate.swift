@@ -38,16 +38,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate,CBPeripheralManagerDelegat
             let serviceUUID:CBUUID = CBUUID.init(string: kServiceUUID)
             
             //添加服务后开始广播 —— Start advertising
-//            var dic = [CBAdvertisementDataLocalNameKey:"Leff",CBAdvertisementDataServiceUUIDsKey:serviceUUID]
-//            self.peripheralManager.startAdvertising(dic)
-                        var dic = [CBAdvertisementDataLocalNameKey:"My device"]
-                        var dic2 = [CBAdvertisementDataServiceUUIDsKey:serviceUUID]
-            self.peripheralManager.startAdvertising(dic)
-            self.peripheralManager.startAdvertising(dic2)
 
-//            var advertisementData : [NSObject:AnyObject] = [CBAdvertisementDataLocalNameKey:"Leff"]
-//            var advertisementData = [CBAdvertisementDataServiceUUIDsKey:serviceUUID]
-//            self.peripheralManager.startAdvertising(advertisementData)
+            var advertisementData : [NSObject:AnyObject] = [CBAdvertisementDataLocalNameKey:"Leff"]
+            advertisementData[CBAdvertisementDataServiceUUIDsKey] = [serviceUUID]
+            self.peripheralManager.startAdvertising(advertisementData)
             
             //要添加的characteristic初始化 —— Initial the characteristics
             let characteristic1:CBUUID = CBUUID.init(string: kCharacteristicUUID_1)
