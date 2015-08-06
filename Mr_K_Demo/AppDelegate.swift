@@ -8,9 +8,10 @@
 
 import UIKit
 import CoreBluetooth
+import Foundation
 
 @UIApplicationMain
-class AppDelegate: UIResponder, UIApplicationDelegate,CBPeripheralManagerDelegate {
+class AppDelegate: UIResponder, UIApplicationDelegate,CBPeripheralManagerDelegate,CBPeripheralDelegate {
 
     var window: UIWindow?
     //设备用户名 —— Set user's name
@@ -25,7 +26,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate,CBPeripheralManagerDelegat
     let kCharacteristicUUID_3:String = "6A3E4B28-522D-4B3B-82A9-D5E2004534FC"
 
     internal var peripheralManager = CBPeripheralManager()
-    internal var centralA = NSMutableArray()
     //保存设备用户名称（后期修改，在用户更改用户名和程序启动的时候同步
     var characteristic_UserName = CBMutableCharacteristic()
     //保存时间
@@ -38,7 +38,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate,CBPeripheralManagerDelegat
             let serviceUUID:CBUUID = CBUUID.init(string: kServiceUUID)
             
             //添加服务后开始广播 —— Start advertising
-
+//TODO:Make it look better
             var advertisementData : [NSObject:AnyObject] = [CBAdvertisementDataLocalNameKey:"Leff"]
             advertisementData[CBAdvertisementDataServiceUUIDsKey] = [serviceUUID]
             self.peripheralManager.startAdvertising(advertisementData)
@@ -71,16 +71,88 @@ class AppDelegate: UIResponder, UIApplicationDelegate,CBPeripheralManagerDelegat
             var serviceM: CBMutableService = CBMutableService.init(type : serviceUUID, primary : true)
             serviceM.characteristics = [characteristic_UserName,characteristic_Time,characteristic_DeviceUUID]
             
+//            var datastring = NSString(data: characteristic_UserName.value!, encoding: NSUTF8StringEncoding)
+//
+//            println(datastring)
+            
             peripheralManager.addService(serviceM)
             
-            updateCharacteristicValue()
+//            updateCharacteristicValue()
+            
         }
 
     }
     
-    func peripheralManagerDidStartAdvertising(peripheral: CBPeripheralManager!, error: NSError!) {
+    
+    func peripheralManager(peripheral: CBPeripheralManager!, central: CBCentral!, didSubscribeToCharacteristic characteristic: CBCharacteristic!) {
+//        if characteristic == characteristic_UserName {
+//            let userNameInNSData:NSData = userName.dataUsingEncoding(NSUTF8StringEncoding, allowLossyConversion: true)!
+//            self.peripheralManager.updateValue(userNameInNSData, forCharacteristic: self.characteristic_UserName, onSubscribedCentrals: nil)
+//            println("特征1：" + userName + "\n")
+//        }
+        
+        var getUUID: CBUUID = characteristic.UUID
+        
+        let characteristic1:CBUUID = CBUUID.init(string: kCharacteristicUUID_1)
+        let characteristic2:CBUUID = CBUUID.init(string: kCharacteristicUUID_2)
+        let characteristic3:CBUUID = CBUUID.init(string: kCharacteristicUUID_3)
+        
+        //当前时间，存在strNowTime:String中 —— Get time for now
+        var date = NSDate()
+        var timeFormatter = NSDateFormatter()
+        timeFormatter.dateFormat = "yyy-MM-dd 'at' HH:mm:ss.SSS"
+        var strNowTime = timeFormatter.stringFromDate(date) as String
+        
+        switch (characteristic.UUID){
+        case characteristic1:
+            let userNameInNSData:NSData = userName.dataUsingEncoding(NSUTF8StringEncoding, allowLossyConversion: true)!
+            self.peripheralManager.updateValue(userNameInNSData, forCharacteristic: self.characteristic_UserName, onSubscribedCentrals: nil)
+            println("特征1：" + userName + "\n")
+            
+        case characteristic2:
+            let timeInNSData:NSData = strNowTime.dataUsingEncoding(NSUTF8StringEncoding, allowLossyConversion: true)!
+            self.peripheralManager.updateValue(timeInNSData, forCharacteristic: self.characteristic_Time, onSubscribedCentrals: nil)
+            println("特征2：" + strNowTime + "\n")
+            
+        case characteristic3:
+            let deviceUUIDInNSData:NSData = deviceUUID.UUIDString.dataUsingEncoding(NSUTF8StringEncoding, allowLossyConversion: true)!
+            self.peripheralManager.updateValue(deviceUUIDInNSData, forCharacteristic: self.characteristic_DeviceUUID, onSubscribedCentrals: nil)
+            println("特征3：" + deviceUUID.UUIDString + "\n")
+            
+        default:
+            println("Characteristic not found in service")
+        }
+        
+        
+//        //当前时间，存在strNowTime:String中 —— Get time for now
+//        var date = NSDate()
+//        var timeFormatter = NSDateFormatter()
+//        timeFormatter.dateFormat = "yyy-MM-dd 'at' HH:mm:ss.SSS"
+//        var strNowTime = timeFormatter.stringFromDate(date) as String
+//        
+//        //将存入characteristic内容转成NSData —— Translate data-to-broadcast to NSData
+//        let userNameInNSData:NSData = userName.dataUsingEncoding(NSUTF8StringEncoding, allowLossyConversion: true)!
+//        let timeInNSData:NSData = strNowTime.dataUsingEncoding(NSUTF8StringEncoding, allowLossyConversion: true)!
+//        let deviceUUIDInNSData:NSData = deviceUUID.UUIDString.dataUsingEncoding(NSUTF8StringEncoding, allowLossyConversion: true)!
+//        
+//        //更新特征值 —— Update characteristics
+//        //        self.peripheralManager.updateValue(userNameInNSData, forCharacteristic: self.characteristic_UserName, onSubscribedCentrals: nil)
+//        //        self.peripheralManager.updateValue(timeInNSData, forCharacteristic: self.characteristic_Time, onSubscribedCentrals: nil)
+//        //        self.peripheralManager.updateValue(deviceUUIDInNSData, forCharacteristic: self.characteristic_DeviceUUID, onSubscribedCentrals: nil)
+//        
+//        var strToPrintln:String = "更新特征值：\n"
+//        strToPrintln += "特征1：" + userName + "\n"
+//        strToPrintln += "特征2：" + strNowTime + "\n"
+//        strToPrintln += "特征3：" + deviceUUID.UUIDString + "\n"
+//        
+//        println(strToPrintln)
+    }
+    
+    func peripheralManager(peripheral: CBPeripheralManager!, didAddService service: CBService!, error: NSError!) {
         
     }
+    
+    
     
     func peripheralManager(peripheral: CBPeripheralManager!, willRestoreState dict: [NSObject : AnyObject]!) {
         
@@ -103,7 +175,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate,CBPeripheralManagerDelegat
         self.peripheralManager.updateValue(userNameInNSData, forCharacteristic: self.characteristic_UserName, onSubscribedCentrals: nil)
         self.peripheralManager.updateValue(timeInNSData, forCharacteristic: self.characteristic_Time, onSubscribedCentrals: nil)
         self.peripheralManager.updateValue(deviceUUIDInNSData, forCharacteristic: self.characteristic_DeviceUUID, onSubscribedCentrals: nil)
-        
+
         var strToPrintln:String = "更新特征值：\n"
         strToPrintln += "特征1：" + userName + "\n"
         strToPrintln += "特征2：" + strNowTime + "\n"
@@ -116,31 +188,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate,CBPeripheralManagerDelegat
     
 
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
-        self.peripheralManager =  CBPeripheralManager.init(delegate:self,queue:nil,options:[CBPeripheralManagerOptionRestoreIdentifierKey:"myPeripheralManagerIdentifier"])
+        self.peripheralManager =  CBPeripheralManager.init(delegate:self,queue:nil,options:[CBPeripheralManagerOptionRestoreIdentifierKey:"peripheralRestoreKey"])
         
         return true
-    }
-
-    func applicationWillResignActive(application: UIApplication) {
-        // Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.
-        // Use this method to pause ongoing tasks, disable timers, and throttle down OpenGL ES frame rates. Games should use this method to pause the game.
-    }
-
-    func applicationDidEnterBackground(application: UIApplication) {
-        // Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later.
-        // If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
-    }
-
-    func applicationWillEnterForeground(application: UIApplication) {
-        // Called as part of the transition from the background to the inactive state; here you can undo many of the changes made on entering the background.
-    }
-
-    func applicationDidBecomeActive(application: UIApplication) {
-        // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
-    }
-
-    func applicationWillTerminate(application: UIApplication) {
-        // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
     }
 
 
